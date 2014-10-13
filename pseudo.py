@@ -5,13 +5,14 @@ class Basket:
    M = 0
    eggs = []   
    def __init__(self, n,m):
-      row = [0]*n
-      q = []
+      self.M = m
+      self.N = n
+      eggs = []      
+      bullshit = []                 #WTF fix this, slik at eggs ikke er global eller noe. 
       for i in range(m):
-         self.N = n
-         self.M = m
-         q.append(row)
-         self.eggs = q
+         row = [0]*n
+         bullshit.append(row)
+      self.eggs = bullshit
    def set_eggs(self, table):
       self.eggs = table
 
@@ -37,10 +38,10 @@ def objective_function(basket, K):
    for row in basket.eggs:
       for j in range(len(basket.eggs[0])):
          if row[j] == 1:
-            points += 1                       # maks (N+M)*2   
+            points += 1                        
    if points < 0:
       return 0   
-   return float(points)/(M*K) 
+   return float(points)/(M*K) #N = M i alle oppgavene
 
 
  
@@ -49,22 +50,28 @@ def find_nabo(basket):
       nabo = Basket(basket.N,basket.M)
       nabo.eggs = basket.eggs
       x = random.randrange(len(basket.eggs))
-      y = random.randrange(len(basket.eggs[0]))
-      if basket.eggs[x][y] == 1:
-         nabo.eggs[x][y] = 0
-      else:
-         nabo.eggs[x][y] = 1
+      y = random.randrange(len(basket.eggs[0]))    # forslag 1: ikke lov aa plassere egg som bryter regler. 
+      if basket.eggs[x][y] == 1:                   # 2: skjekk om obj funksjon ooker: hvis ja: Coolio, hvis nei, sjanse for aa ikke akseptere og proove paa nytt. 
+         nabo.eggs[x][y] = 0                       # 3: Legge inn for at egg flyttes fremfor aa fjaernes? slik at de kun fjaernes om det ikke finnes lovlige flytt. (egget som "bryter" flest regler? ) 
+      else:                                       # 4: mulig med en funskjon som finner lovelige plasseringer?
+         nabo.eggs[x][y] = 1    
       return nabo
 
-P = Basket(3,3)
-q = []
-q.append([1,0,1])
-q.append([0,1,0])
-q.append([1,0,0])
-P.set_eggs(q)
+
+   
+
+
+p = Basket(3,3)
+for i in range(p.N):
+   for j in range(p.M):
+      p.eggs[i][j] = random.randrange(2)
+
 
 print "P before new neighbor"
-print  P.eggs
-print objective_function(P,1)
+print  p.eggs
+P1 = find_nabo(p)
+print "P after new neighbor"
+print p.eggs
+print objective_function(p,1)
 
 
