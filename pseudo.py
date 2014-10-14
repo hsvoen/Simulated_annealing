@@ -3,18 +3,20 @@ import random
 class Basket:
    N = 0
    M = 0
-   eggs = []   
+   #eggs = []   
    def __init__(self, n,m):
       self.M = m
       self.N = n
-      eggs = []      
-      bullshit = []                 #WTF fix this, slik at eggs ikke er global eller noe. 
-      for i in range(m):
-         row = [0]*n
-         bullshit.append(row)
-      self.eggs = bullshit
+      self.eggs = []      
+
    def set_eggs(self, table):
       self.eggs = table
+
+   def init_start_eggs(self):
+      row = [0]*self.N
+      for i in range(self.M):
+         
+         self.eggs.append(list(row))
 
 
 def objective_function(basket, K):
@@ -46,12 +48,20 @@ def objective_function(basket, K):
 
  
 def find_nabo(basket):      
+      print "Find nabo called"
       random.seed()                       # Maa ha krav til godkjent endring. 
+      
+      print "input argument"
+      print basket.eggs
+
       nabo = Basket(basket.N,basket.M)
-      nabo.eggs = basket.eggs
+
+      for egg in basket.eggs:
+
+         nabo.eggs.append(list(egg))
       x = random.randrange(len(basket.eggs))
       y = random.randrange(len(basket.eggs[0]))    # forslag 1: ikke lov aa plassere egg som bryter regler. 
-      if basket.eggs[x][y] == 1:                   # 2: skjekk om obj funksjon ooker: hvis ja: Coolio, hvis nei, sjanse for aa ikke akseptere og proove paa nytt. 
+      if nabo.eggs[x][y] == 1:                   # 2: skjekk om obj funksjon ooker: hvis ja: Coolio, hvis nei, sjanse for aa ikke akseptere og proove paa nytt. 
          nabo.eggs[x][y] = 0                       # 3: Legge inn for at egg flyttes fremfor aa fjaernes? slik at de kun fjaernes om det ikke finnes lovlige flytt. (egget som "bryter" flest regler? ) 
       else:                                       # 4: mulig med en funskjon som finner lovelige plasseringer?
          nabo.eggs[x][y] = 1    
@@ -62,6 +72,7 @@ def find_nabo(basket):
 
 
 p = Basket(3,3)
+p.init_start_eggs()
 for i in range(p.N):
    for j in range(p.M):
       p.eggs[i][j] = random.randrange(2)
@@ -70,8 +81,12 @@ for i in range(p.N):
 print "P before new neighbor"
 print  p.eggs
 P1 = find_nabo(p)
+print "P1:"
+print P1.eggs
 print "P after new neighbor"
 print p.eggs
+
+
 print objective_function(p,1)
 
 
